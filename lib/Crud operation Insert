@@ -1,0 +1,68 @@
+//this is generally posting or inserting our data on database
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+
+class postscreenm extends StatefulWidget {
+  const postscreenm({super.key});
+
+  @override
+  State<postscreenm> createState() => _postscreenState();
+}
+
+class _postscreenState extends State<postscreenm> {
+  final namecontroller =TextEditingController();
+    final surnamecontroller =TextEditingController();
+ @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    namecontroller.dispose();
+    surnamecontroller.dispose();
+  }
+  void cleartext(){
+    namecontroller.clear();
+    surnamecontroller.clear();
+  }
+
+
+  // Step 1
+  final databaseref =FirebaseDatabase.instance.ref('post');
+//we have created a instance of firebase and  after that we have created a reffrence and named as post this will act as node
+//now all the data will store under this node 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(controller: namecontroller,
+              decoration: InputDecoration(
+              hintText: "Name",
+              border: OutlineInputBorder()   ),),  ),
+              Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(controller: surnamecontroller,
+              decoration: InputDecoration(
+              hintText: "Surname",
+              border: OutlineInputBorder()   ),),  ),
+     Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(style: TextButton.styleFrom(backgroundColor: Colors.amber,shape: RoundedRectangleBorder()),
+              onPressed: (){
+              //Step 2
+              //here we are taking our database refrence which is post so it will store our data under the post 
+              //the datetime.now is a refrence everytime we add new data
+               databaseref.child(DateTime.now().millisecondsSinceEpoch.toString()).set({
+              'Name':namecontroller.text.toString(),
+              'Surname': surnamecontroller.text.toString(),
+              'id':DateTime.now().millisecondsSinceEpoch.toString(),
+
+            });
+           cleartext(); }, child: Text("Send")),
+          )
+        ],
+      ),
+    );
+  }
+}
